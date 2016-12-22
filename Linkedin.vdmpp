@@ -1,0 +1,51 @@
+class Linkedin
+types
+public String = seq of char;
+values
+-- TODO Define values here
+instance variables
+private users : set of Person := {};
+operations
+
+public addPerson: Person ==> ()
+addPerson(p) == users := users union {p}
+pre p not in set users
+post users = users~ union {p};
+
+
+public createConnection: String*String ==> ()
+createConnection(n,n1) == (dcl p:Person; dcl p1:Person;p := searchPersonByName(n); 
+p1 :=searchPersonByName(n1); p.addPerson(p1);p1.addPerson(p))
+pre exists p,p1 in set users & (p = searchPersonByName(n) and p1 = searchPersonByName(n1) and p<>p1 and n<>n1);
+
+
+public commonContacts : String*String ==> set of Person
+commonContacts(n,n1) == (dcl commonContacts: set of Person := {};dcl p:Person;dcl p1:Person;
+p := searchPersonByName(n);p1:= searchPersonByName(n1);
+
+return commonContacts;)
+pre n <> n1 and  exists p,p1 in set users & (  p.getNome() = n and p1.getNome() = n1 and p<>p1); 
+--fazer um pre tal que X de Set existe e X.nome = n/n1
+
+
+ 
+mostContacts:() ==> Person
+mostContacts() == return iota p in set users & (not exists p1 in set users & p.contactsSize() > p1.contactsSize())
+pre users <> {}; 
+
+/*
+averageDistance : () ==> nat
+averageDistance == ()
+pre users <> {};
+recursive add 0 if person is in contact list... but how to get smallest dist, must check call Algorithim
+*/
+
+pure searchPersonByName : String ==> Person
+searchPersonByName(nome) == return iota p in set users & p.getNome() = nome 
+pre exists1 p in set users & p.getNome() = nome;
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Linkedin

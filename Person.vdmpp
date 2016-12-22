@@ -1,0 +1,30 @@
+class Person
+types
+public String = seq of char;
+public Gender = <Masculine> | <Feminin>;
+values
+-- TODO Define values here
+instance variables
+private contacts : set of Person := {};
+private name : String :="";
+
+operations
+public addPerson: Person ==> ()
+addPerson(p) == contacts := contacts union {p}
+pre p not in set contacts
+post contacts = contacts~ union {p};
+
+ public pure getNome : () ==> String 
+getNome() == return name;
+
+ public pure getContactos : () ==> set of Person 
+getContactos() == return contacts;
+
+public contactsSize: () ==> nat
+contactsSize() == return card contacts;
+
+functions
+ 
+traces
+-- TODO Define Combinatorial Test Traces here
+end Person
