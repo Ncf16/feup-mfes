@@ -7,6 +7,7 @@ values
 instance variables
 private contacts : set of Person := {};
 private name : String :="";
+private CV: String :="";
 
 operations
 public addPerson: Person ==> ()
@@ -23,6 +24,8 @@ getContactos() == return contacts;
 public contactsSize: () ==> nat
 contactsSize() == return card contacts;
 
+public addCV: String ==> ()
+addCV(cv) == CV:=cv;
 functions
  
 traces
