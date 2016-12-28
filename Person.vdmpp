@@ -1,28 +1,32 @@
 class Person
 types
 public String = seq of char;
-public Gender = <Masculine> | <Feminin>;
+public Gender = <Masculine> | <Feminine>;
 values
 -- TODO Define values here
 instance variables
-private contacts : set of Person := {};
+private connections : set of Person := {};
 private name : String :="";
+private age : nat1 := 99;
+private gender: Gender := <Masculine>;
 private CV: String :="";
+private skillset : set of String := {};
+private location : String := "";
 
 operations
 public addPerson: Person ==> ()
-addPerson(p) == contacts := contacts union {p}
-pre p not in set contacts
-post contacts = contacts~ union {p};
+addPerson(p) == connections := connections union {p}
+pre p not in set connections
+post connections = connections~ union {p};
 
- public pure getNome : () ==> String 
-getNome() == return name;
+ public pure getName : () ==> String 
+getName() == return name;
 
- public pure getContactos : () ==> set of Person 
-getContactos() == return contacts;
+ public pure getConnections : () ==> set of Person 
+getConnections() == return connections;
 
-public contactsSize: () ==> nat
-contactsSize() == return card contacts;
+public connectionsSize: () ==> nat
+connectionsSize() == return card connections;
 
 public addCV: String ==> ()
 addCV(cv) == CV:=cv;

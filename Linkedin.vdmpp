@@ -5,6 +5,8 @@ values
 -- TODO Define values here
 instance variables
 private users : set of Person := {};
+private avgDistance : nat := 0;
+private usersMostContacts : set of Person := {};
 operations
 
 public addPerson: Person ==> ()
@@ -22,22 +24,22 @@ pre exists p,p1 in set users & (p = searchPersonByName(n) and p1 = searchPersonB
 public commonContacts : String*String ==> set of Person
 commonContacts(n,n1) == (dcl commonContacts: set of Person := {};dcl p:Person;dcl p1:Person;
 p := searchPersonByName(n);p1:= searchPersonByName(n1);
-for all c in set p.getContactos() do
- if (c in set p1.getContactos())
+for all c in set p.getConnections() do
+ if (c in set p1.getConnections())
  then
  	commonContacts := commonContacts union {c};
 return commonContacts;)
 
-pre n <> n1 and  exists p,p1 in set users & (  p.getNome() = n and p1.getNome() = n1 and p<>p1)
-post exists p,p1 in set users & ( p.getNome() = n and p1.getNome() = n1 and 
+pre n <> n1 and  exists p,p1 in set users & (  p.getName() = n and p1.getName() = n1 and p<>p1)
+post exists p,p1 in set users & ( p.getName() = n and p1.getName() = n1 and 
 (
-forall c in set RESULT, c1 in set  p.getContactos() ,c2 in set  p1.getContactos() &
- c in set p.getContactos() and c in set p1.getContactos() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
+forall c in set RESULT, c1 in set  p.getConnections() ,c2 in set  p1.getConnections() &
+ c in set p.getConnections() and c in set p1.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
 
 
  
 mostContacts:() ==> Person
-mostContacts() == return iota p in set users & (not exists p1 in set users & p.contactsSize() > p1.contactsSize())
+mostContacts() == return iota p in set users & (not exists p1 in set users & p.connectionsSize() > p1.connectionsSize())
 pre users <> {}; 
 
  addCV: String*String ==> ()
@@ -61,6 +63,9 @@ let x in set resto in(
 pre users <> {};
 
 --Melhorar pre e pos condições principalmente nestas + complicadas, no idea how, but we should do it somehow 
+
+-- In response to that: acho que temos de definir bem se queremos que a pos condicao restrinja so o output, ou se
+-- vai restringir tambem o final system state apos a funcao ser corrida
 distanceAux : Person*set of Person ==> nat
 distanceAux(p,s) == (
 dcl distanceAux: nat :=0;
@@ -79,8 +84,8 @@ distanceBetweenPeople(p,p1) == return 1
 pre users <> {};
 
 pure searchPersonByName : String ==> Person
-searchPersonByName(nome) == return iota p in set users & p.getNome() = nome 
-pre exists1 p in set users & p.getNome() = nome;
+searchPersonByName(nome) == return iota p in set users & p.getName() = nome 
+pre exists1 p in set users & p.getName() = nome;
 
 functions
 -- TODO Define functiones here
