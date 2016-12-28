@@ -52,14 +52,14 @@ pre users <> {};
 averageDistance : () ==> nat
 averageDistance() == ( 
 dcl visited : set of Person := {}; 
-dcl distance: nat := 0; dcl nUsers : nat := card users;dcl resto : set of Person := {};
+dcl distance: nat := 0;dcl resto : set of Person := {};
   resto := users\visited;  
  while resto <> {} do
 let x in set resto in(
  visited:= visited union {x};
   resto := users\visited;
  distance:= distance+distanceAux(x,resto));
- return distance / nUsers)
+ return distance )
 pre users <> {};
 
 --Melhorar pre e pos condições principalmente nestas + complicadas, no idea how, but we should do it somehow 
