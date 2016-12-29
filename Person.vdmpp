@@ -32,7 +32,7 @@ getName() == return name;
  public pure getConnections : () ==> set of Person 
 getConnections() == return connections;
 
-public connectionsSize: () ==> nat
+public pure connectionsSize: () ==> nat
 connectionsSize() == return card connections;
 
 public addCV: String ==> ()

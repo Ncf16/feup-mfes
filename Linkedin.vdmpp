@@ -46,36 +46,32 @@ p2.addPerson(p1);
 )
 pre p1 in set users and p2 in set users and  p1<>p2;
 
+ 
+public commonContacts : Person*Person ==> set of Person
+commonContacts(p,p1) == (dcl commonContacts: set of Person := {};
 
---public commonContacts : String*String ==> set of Person
---commonContacts(n,n1) == (dcl commonContacts: set of Person := {};dcl p:Person;dcl p1:Person;
---p := searchPersonByName(n);p1:= searchPersonByName(n1);
---for all c in set p.getConnections() do
--- if (c in set p1.getConnections())
--- then
--- 	commonContacts := commonContacts union {c};
---return commonContacts;)
-
---pre n <> n1 and  exists p,p1 in set users & (  p.getName() = n and p1.getName() = n1 and p<>p1)
---post exists p,p1 in set users & ( p.getName() = n and p1.getName() = n1 and 
---(
---forall c in set RESULT, c1 in set  p.getConnections() ,c2 in set  p1.getConnections() &
--- c in set p.getConnections() and c in set p1.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
-
+for all c in set p.getConnections() do if (c in set p1.getConnections())
+ then 	commonContacts := commonContacts union {c};
+return commonContacts;)
+pre p <> p1 and  exists p2,p3 in set users & (  p2=p  and p3 =p1)
+post exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
+(
+forall c in set RESULT, c1 in set  p2.getConnections() ,c2 in set  p3.getConnections() &
+ c in set p2.getConnections() and c in set p3.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
+ 
 
  
-mostContacts:() ==> Person
-mostContacts() == return iota p in set users & (not exists p1 in set users & p.connectionsSize() > p1.connectionsSize())
-pre users <> {}; 
+public mostContacts:() ==> Person
+mostContacts() == return iota p in set users & (not exists p1 in set users & p1.connectionsSize() > p.connectionsSize())
+pre users <> {} and exists p in set users &( p.connectionsSize() >0 );
 
- --addCV: String*String ==> ()
- --addCV(n,cv) == (
- --dcl p:Person:= searchPersonByName(n);
--- p.addCV(cv);
- --)
- --pre exists p in set  users & (p = searchPersonByName(n) );
+public addCV: Person*String ==> ()
+ addCV(p,cv) == (
+  p.addCV(cv);
+ )
+ pre exists p1 in set  users & (p1 = p );
 
-averageDistance : () ==> nat
+public averageDistance : () ==> nat
 averageDistance() == ( 
 dcl visited : set of Person := {}; 
 dcl distance: nat := 0;dcl resto : set of Person := {};
