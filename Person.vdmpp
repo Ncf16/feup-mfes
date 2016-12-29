@@ -14,6 +14,13 @@ private skillset : set of String := {};
 private location : String := "";
 
 operations
+
+public Person: String * Gender * nat1 ==> Person
+Person(n, g, a) == (
+name:=n;  gender:=g; age:=a;
+return self;
+);
+
 public addPerson: Person ==> ()
 addPerson(p) == connections := connections union {p}
 pre p not in set connections

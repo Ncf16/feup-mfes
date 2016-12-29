@@ -1,4 +1,4 @@
-class Linkedin
+class LinkedIn
 types
 public String = seq of char;
 values
@@ -7,34 +7,58 @@ instance variables
 private users : set of Person := {};
 private avgDistance : nat := 0;
 private usersMostContacts : set of Person := {};
+inv card users >= 0;
 operations
+
+public LinkedIn: () ==> LinkedIn
+LinkedIn() == (
+return self;
+);
+
+-- Register use case
+public registerUser: String * Person`Gender * nat1 ==> Person
+registerUser(n, g, a) == (
+dcl p:Person := new Person(n, g, a);
+	addPerson(p);
+	return p;
+)
+pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and users <> undefined;--and (users = {} or card users >= 0); -- this last part is users <> nil
 
 public addPerson: Person ==> ()
 addPerson(p) == users := users union {p}
 pre p not in set users
 post users = users~ union {p};
 
-
-public createConnection: String*String ==> ()
-createConnection(n,n1) == (dcl p:Person; dcl p1:Person;p := searchPersonByName(n); 
-p1 :=searchPersonByName(n1); p.addPerson(p1);p1.addPerson(p))
-pre exists p,p1 in set users & (p = searchPersonByName(n) and p1 = searchPersonByName(n1) and p<>p1 and n<>n1);
-
-
-public commonContacts : String*String ==> set of Person
-commonContacts(n,n1) == (dcl commonContacts: set of Person := {};dcl p:Person;dcl p1:Person;
-p := searchPersonByName(n);p1:= searchPersonByName(n1);
-for all c in set p.getConnections() do
- if (c in set p1.getConnections())
- then
- 	commonContacts := commonContacts union {c};
-return commonContacts;)
-
-pre n <> n1 and  exists p,p1 in set users & (  p.getName() = n and p1.getName() = n1 and p<>p1)
-post exists p,p1 in set users & ( p.getName() = n and p1.getName() = n1 and 
+-- Search Person use case
+public searchPersonByName : String ==>  set of Person
+searchPersonByName(name) == 
 (
-forall c in set RESULT, c1 in set  p.getConnections() ,c2 in set  p1.getConnections() &
- c in set p.getConnections() and c in set p1.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
+return  {p | p in set users & p.getName() = name};
+)
+pre is_String(name);  -- exists p in set users & p.getName() = name -----> is this part needed?
+
+
+-- Add Connection use case
+--public createConnection: String*String ==> ()
+--createConnection(n,n1) == (dcl p:Person; dcl p1:Person;p := searchPersonByName(n); 
+--p1 :=searchPersonByName(n1); p.addPerson(p1);p1.addPerson(p))
+--pre exists p,p1 in set users & (p = searchPersonByName(n) and p1 = searchPersonByName(n1) and p<>p1 and n<>n1);
+
+
+--public commonContacts : String*String ==> set of Person
+--commonContacts(n,n1) == (dcl commonContacts: set of Person := {};dcl p:Person;dcl p1:Person;
+--p := searchPersonByName(n);p1:= searchPersonByName(n1);
+--for all c in set p.getConnections() do
+-- if (c in set p1.getConnections())
+-- then
+-- 	commonContacts := commonContacts union {c};
+--return commonContacts;)
+
+--pre n <> n1 and  exists p,p1 in set users & (  p.getName() = n and p1.getName() = n1 and p<>p1)
+--post exists p,p1 in set users & ( p.getName() = n and p1.getName() = n1 and 
+--(
+--forall c in set RESULT, c1 in set  p.getConnections() ,c2 in set  p1.getConnections() &
+-- c in set p.getConnections() and c in set p1.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
 
 
  
@@ -42,12 +66,12 @@ mostContacts:() ==> Person
 mostContacts() == return iota p in set users & (not exists p1 in set users & p.connectionsSize() > p1.connectionsSize())
 pre users <> {}; 
 
- addCV: String*String ==> ()
- addCV(n,cv) == (
- dcl p:Person:= searchPersonByName(n);
- p.addCV(cv);
- )
- pre exists p in set  users & (p = searchPersonByName(n) );
+ --addCV: String*String ==> ()
+ --addCV(n,cv) == (
+ --dcl p:Person:= searchPersonByName(n);
+-- p.addCV(cv);
+ --)
+ --pre exists p in set  users & (p = searchPersonByName(n) );
 
 averageDistance : () ==> nat
 averageDistance() == ( 
@@ -83,12 +107,12 @@ distanceBetweenPeople:Person*Person ==> nat
 distanceBetweenPeople(p,p1) == return 1
 pre users <> {};
 
-pure searchPersonByName : String ==> Person
-searchPersonByName(nome) == return iota p in set users & p.getName() = nome 
+pure searchPersonByNameOld : String ==> Person
+searchPersonByNameOld(nome) == return iota p in set users & p.getName() = nome 
 pre exists1 p in set users & p.getName() = nome;
 
 functions
 -- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
-end Linkedin
+end LinkedIn
