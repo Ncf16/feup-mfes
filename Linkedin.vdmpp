@@ -44,8 +44,14 @@ createConnection(p1, p2) == (
 p1.addPerson(p2);
 p2.addPerson(p1);
 )
-pre p1 in set users and p2 in set users and  p1<>p2;
+pre p1 in set users and p2 in set users and  p1<>p2
+post p2 in set p1.connections and p1 in set p2.connections;
 
+public destroyConnection: Person*Person ==> ()
+destroyConnection(p1, p2) == (
+
+)
+pre p1 in set users and p2 in set users and p1<>p2 and p2 in p1.connections and p1 in p2.connections;
  
 public commonContacts : Person*Person ==> set of Person
 commonContacts(p,p1) == (dcl commonContacts: set of Person := {};
@@ -124,7 +130,7 @@ avgDist() == (
 	
 	return avg / cnt;
 );
-
+-- Put pre and pos
 ------------------------------------------------------
 ------------------------------------------------------
 ------------------------------------------------------
