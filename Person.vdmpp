@@ -22,6 +22,11 @@ name:=n;  gender:=g; age:=a;
 return self;
 );
 
+public removePerson: Person ==> ()
+removePerson(p) == connections := connections\{p}
+pre p in set connections
+post connections = connections~\{p};
+
 public addPerson: Person ==> ()
 addPerson(p) == connections := connections union {p}
 pre p not in set connections
