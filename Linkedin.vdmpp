@@ -101,11 +101,39 @@ distanceAux:= distanceAux + distanceBetweenPeople(p,x);
  pre s <> {}
  post RESULT >=0;
 
+
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+-- IS HERE
+
+public avgDist: () ==> real
+avgDist() == (
+	dcl avg: int := 0;
+	dcl cnt: int := 0;
+	for all u in set users do (
+		dcl users2: set of Person := users \ {u};
+		for all uu in set users2 do (
+			dcl dst: int := distanceBetweenPeople(u, uu);
+			if(dst <> -1) then (
+				avg := avg + dst;
+				cnt := cnt + 1;
+			)
+		);
+	);
+	
+	return avg / cnt;
+);
+
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+
 public distanceBetweenPeople:Person*Person ==> int 
 distanceBetweenPeople(p,p1) ==( 
 dcl queue : seq of Person := [];dcl current : Person ;
 		for all u in set users do (
-		u.setDistance(-1);
+		u.setDistance(-1); -- podes mexer wait lemme tell filipe done
 		);
 	 p.setDistance(0);
 	 queue := queue ^ [p] ;
