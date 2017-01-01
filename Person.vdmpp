@@ -12,6 +12,8 @@ private gender: Gender := <Masculine>;
 private CV: String :="";
 private skillset : set of String := {};
 private location : String := "";
+private distance : int := 0;
+private parent : [Person] :=  undefined;
 
 operations
 
@@ -32,8 +34,17 @@ getName() == return name;
  public pure getConnections : () ==> set of Person 
 getConnections() == return connections;
 
+public pure getDistance : () ==> int
+getDistance() == return distance;
+
 public pure connectionsSize: () ==> nat
 connectionsSize() == return card connections;
+
+public setParent : [Person] ==> ()
+setParent(p) == parent := p;
+
+public setDistance : int ==> ()
+setDistance(d) == distance := d;
 
 public addCV: String ==> ()
 addCV(cv) == CV:=cv;

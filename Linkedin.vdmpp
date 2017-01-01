@@ -82,7 +82,7 @@ let x in set resto in(
   resto := users\visited;
  distance:= distance+distanceAux(x,resto));
  return distance )
-pre users <> {};
+pre users <> {} and forall p in  set users & p.getConnections() <> undefined ;
 
 --Melhorar pre e pos condições principalmente nestas + complicadas, no idea how, but we should do it somehow 
 
@@ -101,10 +101,35 @@ distanceAux:= distanceAux + distanceBetweenPeople(p,x);
  pre s <> {}
  post RESULT >=0;
 
-distanceBetweenPeople:Person*Person ==> nat 
-distanceBetweenPeople(p,p1) == return 1
-pre users <> {};
+public distanceBetweenPeople:Person*Person ==> int 
+distanceBetweenPeople(p,p1) ==( 
+dcl queue : seq of Person := [];dcl current : Person ;
+		for all u in set users do (
+		u.setDistance(-1);
+		u.setParent(nil);
+		
+		);
+-- eu acho que para nós não faz diferença, mas para seguir o algoritmo pelo menos até termos a certeza que funciona
 
+	 p.setDistance(0);
+	 queue := queue ^ [p] ;
+	 while queue <> [] do (
+	   current := hd queue;
+	   queue := tl queue;
+	   for all c in set current.getConnections() do (
+	   if(c.getDistance() = -1) then (
+	   	c.setDistance( current.getDistance()+1);
+	   	c.setParent(current);
+	   	queue:= queue ^ [c] ;
+	   );
+	   if(c = p1) then
+	  		 return c.getDistance();
+	   );
+	 );
+	 -- não existe ligação, retorna valor de erro
+return -1;)
+pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3) and p<>p1 ;
+ 
 functions
 -- TODO Define functiones here
 traces
