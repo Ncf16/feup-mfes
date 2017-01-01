@@ -13,8 +13,7 @@ private CV: String :="";
 private skillset : set of String := {};
 private location : String := "";
 private distance : int := 0;
-private parent : [Person] :=  undefined;
-
+--it worked devolveu o caminho mais curto, só tive que alterar duas linhas
 operations
 
 public Person: String * Gender * nat1 ==> Person
@@ -39,9 +38,6 @@ getDistance() == return distance;
 
 public pure connectionsSize: () ==> nat
 connectionsSize() == return card connections;
-
-public setParent : [Person] ==> ()
-setParent(p) == parent := p;
 
 public setDistance : int ==> ()
 setDistance(d) == distance := d;

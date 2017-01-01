@@ -106,11 +106,7 @@ distanceBetweenPeople(p,p1) ==(
 dcl queue : seq of Person := [];dcl current : Person ;
 		for all u in set users do (
 		u.setDistance(-1);
-		u.setParent(nil);
-		
 		);
--- eu acho que para nós não faz diferença, mas para seguir o algoritmo pelo menos até termos a certeza que funciona
-
 	 p.setDistance(0);
 	 queue := queue ^ [p] ;
 	 while queue <> [] do (
@@ -119,7 +115,6 @@ dcl queue : seq of Person := [];dcl current : Person ;
 	   for all c in set current.getConnections() do (
 	   if(c.getDistance() = -1) then (
 	   	c.setDistance( current.getDistance()+1);
-	   	c.setParent(current);
 	   	queue:= queue ^ [c] ;
 	   );
 	   if(c = p1) then
