@@ -40,15 +40,17 @@ pre is_String(loc);
 public addSkill: String * nat1 ==> ()
 addSkill(description, evaluation) == (
 dcl skill:Skill := new Skill(description, evaluation);
+skillset:= skillset union {skill}
 )
-pre skillset <> undefined and (not exists s in set skillset & (s.description = description))
-post skillset = skillset~ union {mk_Skill(description, evaluation)};
+pre skillset <> undefined and (not exists s in set skillset & (s.getDescription() = description))
+post exists s in set skillset & (s.getDescription() = description and s.getEval() = evaluation 
+and skillset = skillset~ union {s});
 
 public editSkillEvaluation: String*nat1 ==> ()
 editSkillEvaluation(description, newEvaluation) == (
 for all skills in set skillset do(
-		if(skills.description = description) then
-		skills.evaluation := newEvaluation
+		if(skills.getDescription() = description) then
+		skills.setEval( newEvaluation)
 	)
 );
 
