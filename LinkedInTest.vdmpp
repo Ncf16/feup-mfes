@@ -1,0 +1,35 @@
+class LinkedInTest
+types
+public String = seq of char;
+        instance variables
+                l : LinkedIn := new LinkedIn();
+        operations
+                assertTrue: bool ==> ()
+                assertTrue(cond) == return
+                pre cond;
+                        
+                private addUser: () ==> ()
+                addUser() ==
+                (
+                    dcl p:Person;
+                    dcl ppl:set of Person;
+                    assertTrue(0=card l.getUsers()); 
+                    p:=l.registerUser("Luis",<Masculine>,22);
+                    ppl:=l.searchPersonByName("Luis");
+                    assertTrue(card ppl=1);
+                    for all p1 in set ppl do
+                    assertTrue(p.getName()=p1.getName());
+                    
+                    assertTrue((card l.getUsers()) =1);    
+                );
+                public static main: () ==> ()
+                main() ==
+                (
+                        new LinkedInTest().addUser();
+                        
+                );
+                
+                 traces
+ 
+                        
+end LinkedInTest

@@ -161,6 +161,8 @@ dcl queue : seq of Person := [];dcl current : Person ;
 return -1;)
 pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3) and p<>p1 ;
  
+ public pure getUsers : () ==> set of Person
+ getUsers() == return users;
 functions
 -- TODO Define functiones here
 traces
