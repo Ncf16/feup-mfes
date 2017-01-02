@@ -1,0 +1,168 @@
+class LinkedIn
+types
+public String = seq of char;
+values
+
+instance variables
+private users : set of Person := {};
+private avgDistance : nat := 0;
+private usersMostContacts : set of Person := {};
+inv card users >= 0;
+operations
+
+public LinkedIn: () ==> LinkedIn
+LinkedIn() == (
+return self;
+);
+
+-- Register use case
+public registerUser: String * Person`Gender * nat1 ==> Person
+registerUser(n, g, a) == (
+dcl p:Person := new Person(n, g, a);
+	addPerson(p);
+	return p;
+)
+pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and users <> undefined;--and (users = {} or card users >= 0); -- this last part is users <> nil
+
+public addPerson: Person ==> ()
+addPerson(p) == users := users union {p}
+pre p not in set users
+post users = users~ union {p};
+
+-- Search Person use case
+public searchPersonByName : String ==>  set of Person
+searchPersonByName(name) == 
+(
+return  {p | p in set users & p.getName() = name};
+)
+pre is_String(name);  -- exists p in set users & p.getName() = name -----> is this part needed?
+
+
+-- Add Connection use case
+public createConnection: Person*Person ==> ()
+createConnection(p1, p2) == (
+p1.addPerson(p2);
+p2.addPerson(p1);
+)
+pre p1 in set users and p2 in set users and  p1<>p2
+post p2 in set p1.getConnections() and p1 in set p2.getConnections();
+
+public destroyConnection: Person*Person ==> ()
+destroyConnection(p1, p2) == (
+p1.removePerson(p2);
+p2.removePerson(p1);
+) 
+pre p1 in set users and p2 in set users and p1<>p2 and p2 in set p1.getConnections() and p1 in set p2.getConnections()
+post  p2 not in set p1.getConnections() and p1 not in set p2.getConnections();
+ 
+public commonContacts : Person*Person ==> set of Person
+commonContacts(p,p1) == (dcl commonContacts: set of Person := {};
+
+for all c in set p.getConnections() do if (c in set p1.getConnections())
+ then 	commonContacts := commonContacts union {c};
+return commonContacts;)
+pre p <> p1 and  exists p2,p3 in set users & (  p2=p  and p3 =p1)
+post exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
+(
+forall c in set RESULT, c1 in set  p2.getConnections() ,c2 in set  p3.getConnections() &
+ c in set p2.getConnections() and c in set p3.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
+ 
+
+ 
+public mostContacts:() ==> Person
+mostContacts() == return iota p in set users & (not exists p1 in set users & p1.connectionsSize() > p.connectionsSize())
+pre users <> {} and exists p in set users &( p.connectionsSize() >0 );
+
+public addCV: Person*String ==> ()
+ addCV(p,cv) == (
+  p.addCV(cv);
+ )
+ pre exists p1 in set  users & (p1 = p );
+
+public averageDistance : () ==> nat
+averageDistance() == ( 
+dcl visited : set of Person := {}; 
+dcl distance: nat := 0;dcl resto : set of Person := {};
+  resto := users\visited;  
+ while resto <> {} do
+let x in set resto in(
+ visited:= visited union {x};
+  resto := users\visited;
+ distance:= distance+distanceAux(x,resto));
+ return distance )
+pre users <> {} and forall p in  set users & p.getConnections() <> undefined ;
+
+--Melhorar pre e pos condições principalmente nestas + complicadas, no idea how, but we should do it somehow 
+
+-- In response to that: acho que temos de definir bem se queremos que a pos condicao restrinja so o output, ou se
+-- vai restringir tambem o final system state apos a funcao ser corrida
+distanceAux : Person*set of Person ==> nat
+distanceAux(p,s) == (
+dcl distanceAux: nat :=0;
+dcl sAux :set of Person :=s;
+while sAux <> {} do
+let x in set sAux in(
+ sAux:= sAux\{x};
+distanceAux:= distanceAux + distanceBetweenPeople(p,x);
+ );
+ return distanceAux/ (card s))
+ pre s <> {}
+ post RESULT >=0;
+
+
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+-- IS HERE
+
+public avgDist: () ==> real
+avgDist() == (
+	dcl avg: int := 0;
+	dcl cnt: int := 0;
+	for all u in set users do (
+		dcl users2: set of Person := users \ {u};
+		for all uu in set users2 do (
+			dcl dst: int := distanceBetweenPeople(u, uu);
+			if(dst <> -1) then (
+				avg := avg + dst;
+				cnt := cnt + 1;
+			)
+		);
+	);
+	
+	return avg / cnt;
+);
+-- Put pre and pos
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+
+public distanceBetweenPeople:Person*Person ==> int 
+distanceBetweenPeople(p,p1) ==( 
+dcl queue : seq of Person := [];dcl current : Person ;
+		for all u in set users do (
+		u.setDistance(-1); -- podes mexer wait lemme tell filipe done
+		);
+	 p.setDistance(0);
+	 queue := queue ^ [p] ;
+	 while queue <> [] do (
+	   current := hd queue;
+	   queue := tl queue;
+	   for all c in set current.getConnections() do (
+	   if(c.getDistance() = -1) then (
+	   	c.setDistance( current.getDistance()+1);
+	   	queue:= queue ^ [c] ;
+	   );
+	   if(c = p1) then
+	  		 return c.getDistance();
+	   );
+	 );
+	 -- não existe ligação, retorna valor de erro
+return -1;)
+pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3) and p<>p1 ;
+ 
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end LinkedIn
