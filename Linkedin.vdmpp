@@ -2,7 +2,7 @@ class LinkedIn
 types
 public String = seq of char;
 values
--- TODO Define values here
+
 instance variables
 private users : set of Person := {};
 private avgDistance : nat := 0;
