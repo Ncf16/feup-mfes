@@ -82,11 +82,11 @@ operations
 								 p1 - p2 = 2
 								 p1 - p3 = 1
 								 p2 - p3 = 1
-								distance:= 1+1+1+2+1+1= 7
+								distance:= 1+1+2+2+1+1= 8
 								nConnections := 6;
-								avgDist := 7/6 
+								avgDist := 8/6 
 								 */
-								 assertTrue(7/6 = l.distanceBetweenPeople(p,p2));
+								 assertTrue(8/6 = l.avgDist());
                 );
                 public pure getLinkedIn:() ==> LinkedIn
                 getLinkedIn() ==
@@ -103,7 +103,7 @@ operations
 	               lt.getLinkedIn().cleanUsers();     
 	               lt.commonContactsTest();
 	               lt.getLinkedIn().cleanUsers();    
-	               lt.commonContactsTest();
+	               lt.avgDistTest();
                   return      
                 );
 functions
