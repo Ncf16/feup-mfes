@@ -1,15 +1,16 @@
 class LinkedInTest
 types
 public String = seq of char;
-        instance variables
+values     
+instance variables
                 l : LinkedIn := new LinkedIn();
-        operations
+operations
                 assertTrue: bool ==> ()
                 assertTrue(cond) == return
                 pre cond;
                         
-                private addUser: () ==> ()
-                addUser() ==
+                private addUserTest: () ==> ()
+                addUserTest() ==
                 (
                     dcl p:Person;
                     dcl ppl:set of Person;
@@ -21,15 +22,55 @@ public String = seq of char;
                     assertTrue(p.getName()=p1.getName());
                     
                     assertTrue((card l.getUsers()) =1);    
-                );
+                )pre l.getUsers() = {} and card l.getUsers() = 0
+                post l.getUsers() <> {} and card l.getUsers() = 1;
+                
+              private mostContactsTest: () ==> ()
+                mostContactsTest() ==
+                (
+                    dcl p:Person;
+                    dcl p1:Person;
+                    dcl p2:Person;
+                  
+                    assertTrue(0=card l.getUsers()); 
+                    p:=l.registerUser("Luis",<Masculine>,22);
+                    p1:=l.registerUser("Filipe",<Masculine>,22);
+                    p2:=l.registerUser("Pedro",<Masculine>,22);
+                    l.createConnection(p,p1);
+                    l.createConnection(p,p2);
+                    assertTrue(p=l.mostContacts());
+                )pre l.getUsers() = {} and card l.getUsers() = 0;
+               
+               private commonContactsTest: () ==> ()
+                commonContactsTest() ==
+                (
+                    dcl p:Person;
+                    dcl p1:Person;
+                    dcl p2:Person;
+                  
+                    assertTrue(0=card l.getUsers()); 
+                    p:=l.registerUser("Luis",<Masculine>,22);
+                    p1:=l.registerUser("Filipe",<Masculine>,22);
+                    p2:=l.registerUser("Pedro",<Masculine>,22);
+                    l.createConnection(p,p1);
+                    l.createConnection(p,p2);
+                    l.createConnection(p1,p2);
+                    assertTrue({p2} = l.commonContacts(p1,p));
+                )pre l.getUsers() = {} and card l.getUsers() = 0;
+                
                 public static main: () ==> ()
                 main() ==
                 (
-                        new LinkedInTest().addUser();
-                        
+                dcl lt: LinkedInTest :=new LinkedInTest();
+               /* lt.addUserTest(); 
+                lt.cleanUsers();
+                */
+                --lt.mostContactsTest();      
+                  lt.commonContactsTest();
+                  return      
                 );
-                
-                 traces
- 
-                        
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
 end LinkedInTest
