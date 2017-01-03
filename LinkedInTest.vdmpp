@@ -8,10 +8,11 @@ operations
                 assertTrue: bool ==> ()
                 assertTrue(cond) == return
                 pre cond;
-                        
-                private addUserTest: () ==> ()
-                addUserTest() ==
-                (
+               
+               -- Register users
+               public registerUserTest: () ==> ()
+               registerUserTest() ==
+               (
                     dcl p:Person;
                     dcl ppl:set of Person;
                     assertTrue(0=card l.getUsers()); 
@@ -22,10 +23,46 @@ operations
                     assertTrue(p.getName()=p1.getName());
                     
                     assertTrue((card l.getUsers()) =1);    
-                )pre l.getUsers() = {} and card l.getUsers() = 0
-                post l.getUsers() <> {} and card l.getUsers() = 1;
+               )
+               pre l.getUsers() = {} and card l.getUsers() = 0
+               post l.getUsers() <> {} and card l.getUsers() = 1;
                 
-              private mostContactsTest: () ==> ()
+               
+               -- Search Person By Name
+               public searchPersonByNameTest: () ==> ()
+               searchPersonByNameTest() == (
+               return
+               );
+              
+              
+              -- Add and remove connections
+              public createDestroyConnectionTest: () ==> ()
+               createDestroyConnectionTest() == (
+               return
+               );
+                
+              
+              -- Common Contacts
+              public commonContactsTest: () ==> ()
+                commonContactsTest() ==
+                (
+                    dcl p:Person;
+                    dcl p1:Person;
+                    dcl p2:Person;
+                  
+                    assertTrue(0=card l.getUsers()); 
+                    p:=l.registerUser("Luis",<Masculine>,22);
+                    p1:=l.registerUser("Filipe",<Masculine>,22);
+                    p2:=l.registerUser("Pedro",<Masculine>,22);
+                    l.createConnection(p,p1);
+                    l.createConnection(p,p2);
+                    l.createConnection(p1,p2);
+                    assertTrue({p2} = l.commonContacts(p1,p));
+                    
+                );
+              
+              -- User with the most contacts
+              public mostContactsTest: () ==> ()
                 mostContactsTest() ==
                 (
                     dcl p:Person;
@@ -46,25 +83,15 @@ operations
                     assertTrue(p1=l.mostContacts());
                 );
                
-               private commonContactsTest: () ==> ()
-                commonContactsTest() ==
+               -- Distance Between People
+               public distanceBetweenPeopleTest: () ==> ()
+                distanceBetweenPeopleTest() ==
                 (
-                    dcl p:Person;
-                    dcl p1:Person;
-                    dcl p2:Person;
-                  
-                    assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22);
-                    p1:=l.registerUser("Filipe",<Masculine>,22);
-                    p2:=l.registerUser("Pedro",<Masculine>,22);
-                    l.createConnection(p,p1);
-                    l.createConnection(p,p2);
-                    l.createConnection(p1,p2);
-                    assertTrue({p2} = l.commonContacts(p1,p));
-                    
+                return
                 );
                 
-                private avgDistTest : () ==> ()
+                -- Average Distance between users in the network
+                public avgDistTest : () ==> ()
                 avgDistTest() == (
                 dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22);
                 dcl p1:Person:= l.registerUser("Luis",<Masculine>,22);
@@ -97,7 +124,7 @@ operations
                 (
                 dcl lt: LinkedInTest :=new LinkedInTest();
                
-               	 lt.addUserTest();
+               	 lt.registerUserTest();
               	 lt.getLinkedIn().cleanUsers();
 	               lt.mostContactsTest(); 
 	               lt.getLinkedIn().cleanUsers();     

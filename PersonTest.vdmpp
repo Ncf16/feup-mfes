@@ -1,0 +1,49 @@
+class PersonTest
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+-- TODO Define instance variables here
+operations
+
+ -- Add and remove connections only on this user's side (doesn't affect the symmetrical connection on the user he is adding or removing)
+public addRemoveConnectionTest: () ==> ()
+  addRemoveConnectionTest() == (
+  return
+);
+               
+ -- Edit User Location
+public editLocationTest: () ==> ()
+	editLocationTest() == (
+	return
+);
+
+ -- Edit User Curriculum
+public editCVTest: () ==> ()
+	editCVTest() == (
+	return
+);
+
+ -- Add skills and edit their evaluations
+ public addEditSkillsTest: () ==> ()
+	addEditSkillsTest() == (
+	return
+);
+
+public static main: () ==> ()
+	main() ==
+(
+dcl personTest: PersonTest :=new PersonTest();
+  personTest.addRemoveConnectionTest();
+  personTest.editLocationTest();
+  personTest.editCVTest();
+  personTest.addEditSkillsTest();
+	return      
+);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end PersonTest

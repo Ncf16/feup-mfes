@@ -23,24 +23,19 @@ name:=n;  gender:=g; age:=a;
 return self;
 );
 
-public addPerson: Person ==> ()
-addPerson(p) == connections := connections union {p}
-pre p not in set connections
-post connections = connections~ union {p};
-
 public removePerson: Person ==> ()
 removePerson(p) == connections := connections\{p}
 pre p in set connections
 post connections = connections~\{p};
 
-public editLocation: String ==> ()
-editLocation(loc) == location := loc
+public addPerson: Person ==> ()
+addPerson(p) == connections := connections union {p}
+pre p not in set connections
+post connections = connections~ union {p};
+
+public setLocation: String ==> ()
+setLocation(loc) == location := loc
 pre is_String(loc);
-
-public editCV: String ==> ()
-editCV(cv) == CV:=cv
-pre is_String(cv);
-
 
 public addSkill: String * nat1 ==> ()
 addSkill(description, evaluation) == (
@@ -59,8 +54,6 @@ for all skills in set skillset do(
 	)
 );
 
-
-
 public pure getName : () ==> String 
 getName() == return name;
 
@@ -76,6 +69,8 @@ connectionsSize() == return card connections;
 public setDistance : int ==> ()
 setDistance(d) == distance := d;
 
+public addCV: String ==> ()
+addCV(cv) == CV:=cv;
 
 functions
  

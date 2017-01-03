@@ -8,14 +8,12 @@ private users : set of Person := {};
 private avgDistance : nat := 0;
 private usersMostContacts : set of Person := {};
 inv card users >= 0;
-inv forall s1, s2 in set users & (s2 in set s1.getConnections() and s1 in set s2.getConnections());
 operations
 
 public LinkedIn: () ==> LinkedIn
 LinkedIn() == (
 return self;
 );
-
 
 -- Register use case
 public registerUser: String * Person`Gender * nat1 ==> Person
@@ -26,7 +24,6 @@ dcl p:Person := new Person(n, g, a);
 )
 pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and users <> undefined;--and (users = {} or card users >= 0); -- this last part is users <> nil
 
--- Auxiliar operation with auxiliar pre and post conds
 public addPerson: Person ==> ()
 addPerson(p) == users := users union {p}
 pre p not in set users
@@ -50,7 +47,6 @@ p2.addPerson(p1);
 pre p1 in set users and p2 in set users and  p1<>p2
 post p2 in set p1.getConnections() and p1 in set p2.getConnections();
 
--- Destroy Connection use case
 public destroyConnection: Person*Person ==> ()
 destroyConnection(p1, p2) == (
 p1.removePerson(p2);
@@ -59,10 +55,9 @@ p2.removePerson(p1);
 pre p1 in set users and p2 in set users and p1<>p2 and p2 in set p1.getConnections() and p1 in set p2.getConnections()
 post  p2 not in set p1.getConnections() and p1 not in set p2.getConnections();
  
--- Common Contacts use case
 public commonContacts : Person*Person ==> set of Person
-commonContacts(p,p1) == (
-dcl commonContacts: set of Person := {};
+commonContacts(p,p1) == (dcl commonContacts: set of Person := {};
+
 for all c in set p.getConnections() do if (c in set p1.getConnections())
  then 	commonContacts := commonContacts union {c};
 return commonContacts;)
@@ -73,19 +68,75 @@ forall c in set RESULT, c1 in set  p2.getConnections() ,c2 in set  p3.getConnect
  c in set p2.getConnections() and c in set p3.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
  
 
--- Most Contacts use case
+ 
 public mostContacts:() ==> Person
 mostContacts() == return iota p in set users & (not exists p1 in set users & p1.connectionsSize() > p.connectionsSize())
 pre users <> {} and exists p in set users &( p.connectionsSize() >0 );
 
-public editCV: Person*String ==> ()
- editCV(p,cv) == (
-  p.editCV(cv);
+public addCV: Person*String ==> ()
+ addCV(p,cv) == (
+  p.addCV(cv);
  )
  pre exists p1 in set  users & (p1 = p );
 
+public averageDistance : () ==> nat
+averageDistance() == ( 
+dcl visited : set of Person := {}; 
+dcl distance: nat := 0;dcl resto : set of Person := {};
+  resto := users\visited;  
+ while resto <> {} do
+let x in set resto in(
+ visited:= visited union {x};
+  resto := users\visited;
+ distance:= distance+distanceAux(x,resto));
+ return distance )
+pre users <> {} and forall p in  set users & p.getConnections() <> undefined ;
 
--- Distance Between Two Users use case
+--Melhorar pre e pos condições principalmente nestas + complicadas, no idea how, but we should do it somehow 
+
+-- In response to that: acho que temos de definir bem se queremos que a pos condicao restrinja so o output, ou se
+-- vai restringir tambem o final system state apos a funcao ser corrida
+distanceAux : Person*set of Person ==> nat
+distanceAux(p,s) == (
+dcl distanceAux: nat :=0;
+dcl sAux :set of Person :=s;
+while sAux <> {} do
+let x in set sAux in(
+ sAux:= sAux\{x};
+distanceAux:= distanceAux + distanceBetweenPeople(p,x);
+ );
+ return distanceAux/ (card s))
+ pre s <> {}
+ post RESULT >=0;
+
+
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+-- IS HERE
+
+public avgDist: () ==> real
+avgDist() == (
+	dcl avg: int := 0;
+	dcl cnt: int := 0;
+	for all u in set users do (
+		dcl users2: set of Person := users \ {u};
+		for all uu in set users2 do (
+			dcl dst: int := distanceBetweenPeople(u, uu);
+			if(dst <> -1) then (
+				avg := avg + dst;
+				cnt := cnt + 1;
+			)
+		);
+	);
+	
+	return avg / cnt;
+);
+-- Put pre and pos
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+
 public distanceBetweenPeople:Person*Person ==> int 
 distanceBetweenPeople(p,p1) ==( 
 dcl queue : seq of Person := [];dcl current : Person ;
@@ -109,40 +160,7 @@ dcl queue : seq of Person := [];dcl current : Person ;
 	 -- não existe ligação, retorna valor de erro
 return -1;)
 pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3) and p<>p1 ;
-
--- Average Distance use case
-public avgDist: () ==> real
-avgDist() == (
-	dcl avg: int := 0;
-	dcl cnt: int := 0;
-	for all u in set users do (
-		dcl users2: set of Person := users \ {u};
-		for all uu in set users2 do (
-			dcl dst: int := distanceBetweenPeople(u, uu);
-			if(dst <> -1) then (
-				avg := avg + dst;
-				cnt := cnt + 1;
-			)
-		);
-	);
-	
-	return avg / cnt;
-);
--- Put pre and pos
-------------------------------------------------------
-------------------------------------------------------
-------------------------------------------------------
-
-
--- Auxiliar functions 
-public pure getUsers : () ==> set of Person
-getUsers() == return users;
-
-public cleanUsers : () ==> ()
-cleanUsers() ==( users :={};
-return)
-post users = {};
-
+ 
 functions
 -- TODO Define functiones here
 traces
