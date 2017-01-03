@@ -3,7 +3,7 @@ types
 public String = seq of char;
 values     
 instance variables
-                l : LinkedIn := new LinkedIn();
+               public l : LinkedIn := new LinkedIn();
 operations
                 assertTrue: bool ==> ()
                 assertTrue(cond) == return
@@ -38,8 +38,13 @@ operations
                     p2:=l.registerUser("Pedro",<Masculine>,22);
                     l.createConnection(p,p1);
                     l.createConnection(p,p2);
+                    --p has connection with p1 and p2
                     assertTrue(p=l.mostContacts());
-                )pre l.getUsers() = {} and card l.getUsers() = 0;
+                    l.createConnection(p1,p2);
+                    l.destroyConnection(p,p2);
+                	-- p1 has connection with p & p2 while p only has with p1
+                    assertTrue(p1=l.mostContacts());
+                );
                
                private commonContactsTest: () ==> ()
                 commonContactsTest() ==
@@ -56,17 +61,49 @@ operations
                     l.createConnection(p,p2);
                     l.createConnection(p1,p2);
                     assertTrue({p2} = l.commonContacts(p1,p));
-                )pre l.getUsers() = {} and card l.getUsers() = 0;
+                    
+                );
+                
+                private avgDistTest : () ==> ()
+                avgDistTest() == (
+                dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22);
+                dcl p1:Person:= l.registerUser("Luis",<Masculine>,22);
+                dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22);
+                dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22);
+   
+								 l.createConnection(p,p1);
+								 l.createConnection(p3,p1);
+								 l.createConnection(p2,p3);
+								 l.createConnection(p2,p);
+								 /*
+								 p - p1 = 1
+								 p - p2 = 1
+								 p - p3 = 2
+								 p1 - p2 = 2
+								 p1 - p3 = 1
+								 p2 - p3 = 1
+								distance:= 1+1+1+2+1+1= 7
+								nConnections := 6;
+								avgDist := 7/6 
+								 */
+								 assertTrue(7/6 = l.distanceBetweenPeople(p,p2));
+                );
+                public pure getLinkedIn:() ==> LinkedIn
+                getLinkedIn() ==
+                return l;
                 
                 public static main: () ==> ()
                 main() ==
                 (
                 dcl lt: LinkedInTest :=new LinkedInTest();
-               /* lt.addUserTest(); 
-                lt.cleanUsers();
-                */
-                --lt.mostContactsTest();      
-                  lt.commonContactsTest();
+               
+               	 lt.addUserTest();
+              	 lt.getLinkedIn().cleanUsers();
+	               lt.mostContactsTest(); 
+	               lt.getLinkedIn().cleanUsers();     
+	               lt.commonContactsTest();
+	               lt.getLinkedIn().cleanUsers();    
+	               lt.commonContactsTest();
                   return      
                 );
 functions
