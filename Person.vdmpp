@@ -23,8 +23,9 @@ name:=n;  gender:=g; age:=a;
 return self;
 );
 
-public addPerson: Person ==> ()
-addPerson(p) == connections := connections union {p}
+public addConnection: Person ==> Person
+addConnection(p) == (connections := connections union {p};
+return self;)
 pre p not in set connections
 post connections = connections~ union {p};
 

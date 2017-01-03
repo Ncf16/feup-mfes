@@ -8,7 +8,12 @@ private users : set of Person := {};
 private avgDistance : nat := 0;
 private usersMostContacts : set of Person := {};
 inv card users >= 0;
-inv forall s1, s2 in set users & (s2 in set s1.getConnections() and s1 in set s2.getConnections());
+inv forall s1, s2 in set users & (s2<>s1 => 
+ (
+ (s2 in set s1.getConnections() and s1 in set s2.getConnections()) or 
+ (s2 not in set s1.getConnections() and s1 not in set s2.getConnections())
+ )
+ );
 operations
 
 public LinkedIn: () ==> LinkedIn
@@ -44,8 +49,8 @@ pre is_String(name);  -- exists p in set users & p.getName() = name -----> is th
 -- Add Connection use case
 public createConnection: Person*Person ==> ()
 createConnection(p1, p2) == (
-p1.addPerson(p2);
-p2.addPerson(p1);
+dcl p: set of Person;
+atomic(p:={p1.addConnection(p2)} union {p2.addConnection(p1)})
 )
 pre p1 in set users and p2 in set users and  p1<>p2
 post p2 in set p1.getConnections() and p1 in set p2.getConnections();
