@@ -26,7 +26,7 @@ dcl p:Person := new Person(n, g, a,u);
 	return p;
 )
 pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and is_String(u) and users <> undefined
-post (forall u in set users & (u <> RESULT => (u.getUsername() <> RESULT.getUsername())));--and (users = {} or card users >= 0); -- this last part is users <> nil
+post (forall user in set users & (user <> RESULT => (user.getUsername() <> RESULT.getUsername())));--and (users = {} or card users >= 0); -- this last part is users <> nil
 
 -- Auxiliar operation with auxiliar pre and post conds
 public addPerson: Person ==> ()
