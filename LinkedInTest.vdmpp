@@ -16,7 +16,7 @@ operations
                     dcl p:Person;
                     dcl ppl:set of Person;
                     assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22);
+                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
                     ppl:=l.searchPersonByName("Luis");
                     assertTrue(card ppl=1);
                     for all p1 in set ppl do
@@ -51,9 +51,9 @@ operations
                     dcl p2:Person;
                   
                     assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22);
-                    p1:=l.registerUser("Filipe",<Masculine>,22);
-                    p2:=l.registerUser("Pedro",<Masculine>,22);
+                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+                    p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+                    p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
                     l.createConnection(p,p1);
                     l.createConnection(p,p2);
                     l.createConnection(p1,p2);
@@ -70,9 +70,9 @@ operations
                     dcl p2:Person;
                   
                     assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22);
-                    p1:=l.registerUser("Filipe",<Masculine>,22);
-                    p2:=l.registerUser("Pedro",<Masculine>,22);
+                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+                    p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+                    p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
                     l.createConnection(p,p1);
                     l.createConnection(p,p2);
                     --p has connection with p1 and p2
@@ -93,10 +93,10 @@ operations
                 -- Average Distance between users in the network
                 public avgDistTest : () ==> ()
                 avgDistTest() == (
-                dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22);
-                dcl p1:Person:= l.registerUser("Luis",<Masculine>,22);
-                dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22);
-                dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22);
+                dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22,"pedro22");
+                dcl p1:Person:= l.registerUser("Luis",<Masculine>,22,"luis22");
+                dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22,"carlos22");
+                dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22,"filipe22");
    
 								 l.createConnection(p,p1);
 								 l.createConnection(p3,p1);

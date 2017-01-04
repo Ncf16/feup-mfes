@@ -14,12 +14,13 @@ private CV: String :="";
 private skillset : set of Skill := {};
 private location : String := "";
 private distance : int := 0;
+private username : String;
 --it worked devolveu o caminho mais curto, só tive que alterar duas linhas
 operations
 
-public Person: String * Gender * nat1 ==> Person
-Person(n, g, a) == (
-name:=n;  gender:=g; age:=a;
+public Person: String * Gender * nat1 * String ==> Person
+Person(n, g, a,u) == (
+name:=n;  gender:=g; age:=a;username:=u;
 return self;
 );
 
@@ -60,7 +61,8 @@ for all skills in set skillset do(
 	)
 );
 
-
+public pure getUsername : () ==> String
+getUsername() == return username;
 
 public pure getName : () ==> String 
 getName() == return name;

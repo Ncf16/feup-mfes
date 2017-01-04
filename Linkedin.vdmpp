@@ -5,15 +5,11 @@ values
 
 instance variables
 private users : set of Person := {};
-private avgDistance : nat := 0;
+private avgDistance : int := 1;
 private usersMostContacts : set of Person := {};
 inv card users >= 0;
-inv forall s1, s2 in set users & (s2<>s1 => 
- (
- (s2 in set s1.getConnections() and s1 in set s2.getConnections()) or 
- (s2 not in set s1.getConnections() and s1 not in set s2.getConnections())
- )
- );
+
+ inv avgDistance > 0;
 operations
 
 public LinkedIn: () ==> LinkedIn
@@ -23,13 +19,14 @@ return self;
 
 
 -- Register use case
-public registerUser: String * Person`Gender * nat1 ==> Person
-registerUser(n, g, a) == (
-dcl p:Person := new Person(n, g, a);
+public registerUser: String * Person`Gender * nat1 * String ==> Person
+registerUser(n, g, a ,u) == (
+dcl p:Person := new Person(n, g, a,u);
 	addPerson(p);
 	return p;
 )
-pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and users <> undefined;--and (users = {} or card users >= 0); -- this last part is users <> nil
+pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and is_String(u) and users <> undefined
+post (forall u in set users & (u <> RESULT => (u.getUsername() <> RESULT.getUsername())));--and (users = {} or card users >= 0); -- this last part is users <> nil
 
 -- Auxiliar operation with auxiliar pre and post conds
 public addPerson: Person ==> ()
@@ -130,8 +127,8 @@ avgDist() == (
 			)
 		);
 	);
-	
-	return avg / cnt;
+	avgDistance := avg/cnt;
+	return avgDistance;
 );
 -- Put pre and pos
 ------------------------------------------------------
