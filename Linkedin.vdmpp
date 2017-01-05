@@ -40,7 +40,7 @@ searchPersonByName(name) ==
 (
 return  {p | p in set users & p.getName() = name};
 )
-pre is_String(name);  -- exists p in set users & p.getName() = name -----> is this part needed?
+pre is_String(name);-- exists p in set users & p.getName() = name -----> is this part needed?
 
 
 -- Add Connection use case
@@ -58,7 +58,7 @@ destroyConnection(p1, p2) == (
 p1.removeConnection(p2);
 p2.removeConnection(p1);
 ) 
-pre p1 in set users and p2 in set users and p1<>p2 and p2 in set p1.getConnections() and p1 in set p2.getConnections()
+pre  p1<>p2 and p1 in set users and p2 in set users and p2 in set p1.getConnections() and p1 in set p2.getConnections()
 post  p2 not in set p1.getConnections() and p1 not in set p2.getConnections();
  
 -- Common Contacts use case
@@ -71,15 +71,19 @@ return commonContacts;)
 pre p <> p1 and  exists p2,p3 in set users & (  p2=p  and p3 =p1)
 post exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
 (
-forall c in set RESULT, c1 in set  p2.getConnections() ,c2 in set  p3.getConnections() &
- c in set p2.getConnections() and c in set p3.getConnections() and (c1<>c2 or c1 = c2 and c1 in set RESULT )));
+forall c in set RESULT &
+ (c in set p2.getConnections() and c in set p3.getConnections())
+ and 
+ forall c1 in set  p2.getConnections() ,c2 in set  p3.getConnections() &
+  (c1<>c2 or (c1 = c2 and c1 in set RESULT ))));
  
 
 -- Most Contacts use case
 public mostContacts:() ==> set of Person
 mostContacts() ==
 	return {s|s in set users & (not exists p1 in set users & p1.connectionsSize() > s.connectionsSize())}
-pre users <> {}; -- and exists p in set users &( p.connectionsSize() >0 );
+pre users <> {}
+post forall u in set RESULT & (not exists p in set users & (p.connectionsSize() > u.connectionsSize()));
 
 public editCV: Person*String ==> ()
  editCV(p,cv) == (
@@ -112,7 +116,8 @@ dcl queue : seq of Person := [];dcl current : Person ;
 	 -- no path connecting the two people. Returns -1
 	return -1;
 )
-pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3)  ;
+pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3);
+--post RESULT = -1 or (p = p1 and RESULT = 0);
 
 -- Average Distance use case
 public avgDist: () ==> real
@@ -129,6 +134,10 @@ avgDist() == (
 			)
 		);
 	);
+	if(cnt = 0)
+	then
+	return 0
+	else
 	avgDistance := avg/cnt;
 	return avgDistance;
 )
@@ -143,8 +152,4 @@ cleanUsers() ==( users :={};
 return)
 post users = {};
 
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end LinkedIn

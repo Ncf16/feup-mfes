@@ -214,6 +214,7 @@ avgDistTest() == (
 	p4:= l.registerUser("Jose",<Masculine>,22,"jose22");
 	--Stays the same since P4 is not connected to any Person in the network thefore it has no connections in the network
 	assertTrue(8/6 = l.avgDist());
+
 );
                 
 public pure getLinkedIn:() ==> LinkedIn

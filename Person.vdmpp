@@ -13,7 +13,7 @@ private gender: Gender := <Masculine>;
 private CV: String :="";
 private skillset : set of Skill := {};
 private location : String := "";
-private distance : int := 0;
+private distance : real := 0;
 private username : String;
 --it worked devolveu o caminho mais curto, só tive que alterar duas linhas
 operations
@@ -22,7 +22,7 @@ public Person: String * Gender * nat1 * String ==> Person
 Person(n, g, a,u) == (
 name:=n;  gender:=g; age:=a;username:=u;
 return self;
-);
+) pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and is_String(u);
 
 public addConnection: Person ==> ()
 addConnection(p) == (connections := connections union {p};
@@ -60,7 +60,8 @@ for all skills in set skillset do(
 		if(skills.getDescription() = description) then
 		skills.setLevel(newLevel)
 	)
-);
+)pre skillset <> undefined and (card skillset >0) and exists s in set skillset & (s.getDescription() = description)
+post exists s in set skillset & (s.getDescription() = description and s.getLevel() = newLevel ); 
 
 public pure getUsername : () ==> String
 getUsername() == return username;
@@ -86,13 +87,13 @@ getGender() == return gender;
  public pure getConnections : () ==> set of Person 
 getConnections() == return connections;
 
-public pure getDistance : () ==> int
+public pure getDistance : () ==> real
 getDistance() == return distance;
 
 public pure connectionsSize: () ==> nat
 connectionsSize() == return card connections;
 
-public setDistance : int ==> ()
+public setDistance : real ==> ()
 setDistance(d) == distance := d;
 
 
