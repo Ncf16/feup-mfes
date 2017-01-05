@@ -5,7 +5,7 @@ values
 
 instance variables
 private users : set of Person := {};
-private avgDistance : int := 1;
+private avgDistance : real := 1;
 private usersMostContacts : set of Person := {};
 inv card users >= 0;
 
@@ -110,7 +110,7 @@ dcl queue : seq of Person := [];dcl current : Person ;
 	 );
 	 -- não existe ligação, retorna valor de erro
 return -1;)
-pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3) and p<>p1 ;
+pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3)  ;
 
 -- Average Distance use case
 public avgDist: () ==> real

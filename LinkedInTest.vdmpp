@@ -27,12 +27,12 @@ registerUserTest() ==
 	
 	p3 := l.registerUser("Carla",<Feminine>,30,"carla30");
 	assertTrue(card l.getUsers() = 3);
-	assertTrue(exists1 s in set l.getUsers() & s.getName() = "Carla"); -- Only ppl named luis exist yet
+	assertTrue(exists1 s in set l.getUsers() & s.getName() = "Carla"); -- Now we have 2 Luis and one Carla
 	
 	-- NO NEED TO TEST IF CONSTRUCTORS SET PARAMETERS CORRECTLY - this is already done on the tests of the PersonTest class, specifically personConstructorTest
 )
 pre l.getUsers() = {} and card l.getUsers() = 0
-post l.getUsers() <> {} and card l.getUsers() = 1;
+post l.getUsers() <> {} and card l.getUsers() = 3;
                 
                
 -- Search Person By Name
@@ -63,6 +63,21 @@ searchPersonByNameTest() == (
 -- Add and remove connections
 public createDestroyConnectionTest: () ==> ()
 createDestroyConnectionTest() == (
+
+	dcl p:Person;
+	dcl p1:Person;
+	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+	l.createConnection(p,p1);
+	
+	assertTrue(1 = (card p.getConnections()));
+	assertTrue(1 = (card p1.getConnections()));
+	
+	l.destroyConnection(p,p1);
+	
+	assertTrue(0 = (card p.getConnections()));
+	assertTrue(0 = (card p1.getConnections()));
+	
 	return
 );
                 
@@ -110,6 +125,24 @@ mostContactsTest() == (
 -- Distance Between People
 public distanceBetweenPeopleTest: () ==> ()
 distanceBetweenPeopleTest() == (
+	dcl p:Person;
+  dcl p1:Person;
+	dcl p2:Person;
+	dcl p3:Person;
+                  
+	assertTrue(0=card l.getUsers()); 
+	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
+	p3:=l.registerUser("Jose",<Masculine>,22,"jose22");
+	assertTrue(4 = (card l.getUsers()));
+	l.createConnection(p,p1);
+	l.createConnection(p1,p2);
+	-- p->p1->p2 (logo d de p a p1 é 1 e de p a p2 é 2)
+	assertTrue(1 = l.distanceBetweenPeople(p,p1));
+	assertTrue(2 =  l.distanceBetweenPeople(p,p2));
+	assertTrue(0 =  l.distanceBetweenPeople(p,p));
+	assertTrue(-1 =  l.distanceBetweenPeople(p,p3));
 	return
 );
 
@@ -157,11 +190,14 @@ main() == (
 	lt.commonContactsTest();
 	lt.getLinkedIn().cleanUsers();    
 	lt.avgDistTest();
+	lt.getLinkedIn().cleanUsers();
+	lt.createDestroyConnectionTest();
+	lt.getLinkedIn().cleanUsers();
+	lt.distanceBetweenPeopleTest();
+	
 	return      
 );
                 
 functions
--- TODO Define functiones here
 traces
--- TODO Define Combinatorial Test Traces here
 end LinkedInTest
