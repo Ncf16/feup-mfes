@@ -71,11 +71,9 @@ return commonContacts;)
 pre p <> p1 and  exists p2,p3 in set users & (  p2=p  and p3 =p1)
 post exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
 (
-forall c in set RESULT &
- (c in set p2.getConnections() and c in set p3.getConnections())
- and 
- forall c1 in set  p2.getConnections() ,c2 in set  p3.getConnections() &
-  (c1<>c2 or (c1 = c2 and c1 in set RESULT ))));
+forall c in set RESULT & (c in set p2.getConnections() and c in set p3.getConnections() 
+)));
+ 
  
 
 -- Most Contacts use case
