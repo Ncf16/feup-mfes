@@ -26,7 +26,7 @@ dcl p:Person := new Person(n, g, a,u);
 	return p;
 )
 pre is_String(n) and is_Person`Gender(g) and is_nat1(a) and is_String(u) and users <> undefined
-post (forall user in set users & (user <> RESULT => (user.getUsername() <> RESULT.getUsername())));--and (users = {} or card users >= 0); -- this last part is users <> nil
+post (forall user in set users & (user <> RESULT => (user.getUsername() <> RESULT.getUsername())));
 
 -- Auxiliar operation with auxiliar pre and post conds
 public addPerson: Person ==> ()
@@ -93,7 +93,7 @@ public distanceBetweenPeople:Person*Person ==> int
 distanceBetweenPeople(p,p1) ==( 
 dcl queue : seq of Person := [];dcl current : Person ;
 		for all u in set users do (
-		u.setDistance(-1); -- podes mexer wait lemme tell filipe done
+		u.setDistance(-1);
 		);
 	 p.setDistance(0);
 	 queue := queue ^ [p] ;
@@ -109,8 +109,9 @@ dcl queue : seq of Person := [];dcl current : Person ;
 	  		 return c.getDistance();
 	   );
 	 );
-	 -- não existe ligação, retorna valor de erro
-return -1;)
+	 -- no path connecting the two people. Returns -1
+	return -1;
+)
 pre users <> {} and exists p2,p3 in set users & (p=p2 and p1=p3)  ;
 
 -- Average Distance use case
