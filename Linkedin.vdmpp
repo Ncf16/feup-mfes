@@ -76,9 +76,10 @@ forall c in set RESULT, c1 in set  p2.getConnections() ,c2 in set  p3.getConnect
  
 
 -- Most Contacts use case
-public mostContacts:() ==> Person
-mostContacts() == return iota p in set users & (not exists p1 in set users & p1.connectionsSize() > p.connectionsSize())
-pre users <> {} and exists p in set users &( p.connectionsSize() >0 );
+public mostContacts:() ==> set of Person
+mostContacts() ==
+	return {s|s in set users & (not exists p1 in set users & p1.connectionsSize() > s.connectionsSize())}
+pre users <> {}; -- and exists p in set users &( p.connectionsSize() >0 );
 
 public editCV: Person*String ==> ()
  editCV(p,cv) == (
@@ -129,7 +130,9 @@ avgDist() == (
 	);
 	avgDistance := avg/cnt;
 	return avgDistance;
-);
+)
+pre users <> {} and users <> undefined
+post avgDistance >= 0;
 -- Put pre and pos
 ------------------------------------------------------
 ------------------------------------------------------

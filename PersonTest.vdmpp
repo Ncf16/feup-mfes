@@ -46,17 +46,17 @@ public addRemoveConnectionTest: () ==> ()
   assertTrue(forall p in set p1.getConnections() & p.getName() = "Joana");
   
   -- Pedro adds Ana to his connection set
-  p1.addConnection(p2);
+  p1.addConnection(p3);
   assertTrue(card p1.getConnections() = 2);
   assertTrue(exists1 p in set p1.getConnections() & p.getName() = "Ana");
   
   -- Pedro removes Joana from his connection set
-  p1.removeConnection(p1);
+  p1.removeConnection(p2);
   assertTrue(card p1.getConnections() = 1);
   assertTrue(forall p in set p1.getConnections() & p.getName() = "Ana");
   
   -- Pedro removes Ana from his connection set
-  p1.removeConnection(p2);
+  p1.removeConnection(p3);
   assertTrue(card p1.getConnections() = 0);
   
   return

@@ -29,7 +29,7 @@ registerUserTest() ==
 	assertTrue(card l.getUsers() = 3);
 	assertTrue(exists1 s in set l.getUsers() & s.getName() = "Carla"); -- Now we have 2 Luis and one Carla
 	
-	-- NO NEED TO TEST IF CONSTRUCTORS SET PARAMETERS CORRECTLY - this is already done on the tests of the PersonTest class, specifically personConstructorTest
+	-- NO NEED TO TEST IF PERSON CONSTRUCTORS SET PARAMETERS CORRECTLY - this is already done on the tests of the PersonTest class, specifically personConstructorTest
 )
 pre l.getUsers() = {} and card l.getUsers() = 0
 post l.getUsers() <> {} and card l.getUsers() = 3;
@@ -59,24 +59,40 @@ searchPersonByNameTest() == (
 	return
 );
               
--- TODO  
 -- Add and remove connections
 public createDestroyConnectionTest: () ==> ()
 createDestroyConnectionTest() == (
 
 	dcl p:Person;
 	dcl p1:Person;
+	dcl p2: Person;
 	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
 	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+	p2:=l.registerUser("Maria",<Feminine>, 24, "maria24");
+	
 	l.createConnection(p,p1);
+	l.createConnection(p1,p2);
 	
-	assertTrue(1 = (card p.getConnections()));
-	assertTrue(1 = (card p1.getConnections()));
+	assertTrue(card p.getConnections() = 1 and card p1.getConnections() = 2 and card p2.getConnections() = 1);
+	-- Luis has 1 connection with username filipe22
+	assertTrue(exists s in set p.getConnections() & s.getUsername()="filipe22");
 	
+	-- Filipe has 2 connections with usernames "luis22" and "maria24"
+	assertTrue(exists1 s in set p1.getConnections() & s.getUsername()="luis22");
+	assertTrue(exists1 s in set p1.getConnections() & s.getUsername()="maria24");
+	
+	--Maria has 1 connection with username "filipe22"
+	assertTrue(exists1 s in set p2.getConnections() & s.getUsername()="filipe22");
+	
+	-- P and P1 stop being connected
 	l.destroyConnection(p,p1);
+	assertTrue(card p.getConnections() = 0 and card p1.getConnections() = 1 and card p2.getConnections() = 1);
+	-- Filipe now only has 1 connection, to "maria24" and she only has 1 connection, to "filipe22"
+	assertTrue(exists1 s in set p1.getConnections() & s.getUsername()="maria24");
+	assertTrue(exists1 s in set p2.getConnections() & s.getUsername()="filipe22");
 	
-	assertTrue(0 = (card p.getConnections()));
-	assertTrue(0 = (card p1.getConnections()));
+	l.destroyConnection(p1,p2);
+	assertTrue(card p.getConnections() = 0 and card p1.getConnections() = 0 and card p2.getConnections() = 0);
 	
 	return
 );
@@ -97,31 +113,48 @@ commonContactsTest() ==
 	l.createConnection(p,p1);
 	l.createConnection(p,p2);
 	l.createConnection(p1,p2);
-	assertTrue({p2} = l.commonContacts(p1,p));
+	assertTrue(l.commonContacts(p1,p) = {p2});
 );
               
 -- User with the most contacts
 public mostContactsTest: () ==> ()
 mostContactsTest() == (
+
 	dcl p:Person;
   dcl p1:Person;
 	dcl p2:Person;
-                  
-	assertTrue(0=card l.getUsers()); 
+  dcl p3:Person;    
+      
+	assertTrue(0=card l.getUsers()); -- this is already tested on registerUserTest
 	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
 	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
 	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
+	p3:=l.registerUser("Maria",<Feminine>, 24,"maria24");
+	     
+	-- As long as there are users, there's always someone with the most, even if that most is 0.
+	-- Before any connections, they all have 0, so they all have the most connections. 
+	assertTrue({p,p1,p2,p3} = l.mostContacts());
+	
+	--  p<->p1<->p2      Therefore p1 has 1 connections, p1 has 2 and p2 has 1. p1 has the most connections!
 	l.createConnection(p,p1);
-	l.createConnection(p,p2);
-	--p has connection with p1 and p2
-	assertTrue(p=l.mostContacts());
-	l.createConnection(p1,p2);
-	l.destroyConnection(p,p2);
-	-- p1 has connection with p & p2 while p only has with p1
-	assertTrue(p1=l.mostContacts());
+	l.createConnection(p1,p2);       
+	assertTrue(l.mostContacts() = {p1});
+	
+	--  p<->p1<->p2<->p3      Therefore p has 1 connections, p1 has 2, p2 has 2 and p3 has 1. p1 and p2 are tied for the most connections!
+	l.createConnection(p2, p3);
+	assertTrue(l.mostContacts() = {p1,p2});
+	
+	--  <-/   /->   Means a broken link
+	--  p<-/  /->p1<->p2<->p3      Therefore p has 0 connections, p1 has 1, p2 has 2 and p3 has 1. p2 has the most connections!
+	l.destroyConnection(p,p1);
+	assertTrue(l.mostContacts() = {p2});
+	
+		--  ...p<->p1<->p2<->p3<->p... it's a full ring cycle. Every person has 2 connections.
+	l.createConnection(p, p1);
+	l.createConnection(p3, p);
+	assertTrue(l.mostContacts() = {p,p1,p2,p3});
 );
                
--- TODO -> por tipo 4 pessoas ou assim, e fazer varias distancias entre elas. Por 1 pessoa disconectada e dar que a distancia é -1. Distancia a propria pessoa e 0.
 -- Distance Between People
 public distanceBetweenPeopleTest: () ==> ()
 distanceBetweenPeopleTest() == (
@@ -130,19 +163,25 @@ distanceBetweenPeopleTest() == (
 	dcl p2:Person;
 	dcl p3:Person;
                   
-	assertTrue(0=card l.getUsers()); 
+	assertTrue(card l.getUsers() = 0); 
 	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
 	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
 	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
 	p3:=l.registerUser("Jose",<Masculine>,22,"jose22");
-	assertTrue(4 = (card l.getUsers()));
+	assertTrue(card l.getUsers() = 4);
+	
+	--  p<->p1<->p2   p3                 
 	l.createConnection(p,p1);
 	l.createConnection(p1,p2);
-	-- p->p1->p2 (logo d de p a p1 é 1 e de p a p2 é 2)
-	assertTrue(1 = l.distanceBetweenPeople(p,p1));
-	assertTrue(2 =  l.distanceBetweenPeople(p,p2));
-	assertTrue(0 =  l.distanceBetweenPeople(p,p));
-	assertTrue(-1 =  l.distanceBetweenPeople(p,p3));
+	
+	-- d(p,p1)=1; d(p1,p2)=1;  d(p,p2)=2;  d(p,p)=0 as it is itself 
+	-- d(p, p3)=-1, as there is no path between them, same for p1 to p3 and p2 to p3
+	assertTrue(l.distanceBetweenPeople(p,p1) = 1);
+	assertTrue(l.distanceBetweenPeople(p,p2) = 2);
+	assertTrue(l.distanceBetweenPeople(p,p) = 0);
+	assertTrue(l.distanceBetweenPeople(p,p3) = -1);
+	assertTrue(l.distanceBetweenPeople(p1,p3) = -1);
+	assertTrue(l.distanceBetweenPeople(p2,p3) = -1);
 	return
 );
 
