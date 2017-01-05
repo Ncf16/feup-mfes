@@ -155,7 +155,7 @@ avgDistTest() == (
 	dcl p1:Person:= l.registerUser("Luis",<Masculine>,22,"luis22");
 	dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22,"carlos22");
 	dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22,"filipe22");
-   
+  dcl p4:Person; 
 	l.createConnection(p,p1);
 	l.createConnection(p3,p1);
 	l.createConnection(p2,p3);
@@ -171,6 +171,9 @@ avgDistTest() == (
 								nConnections := 6;
 								avgDist := 8/6 
 								 */
+	assertTrue(8/6 = l.avgDist());
+	p4:= l.registerUser("Jose",<Masculine>,22,"jose22");
+	--Stays the same since P4 is not connected to any Person in the network thefore it has no connections in the network
 	assertTrue(8/6 = l.avgDist());
 );
                 
