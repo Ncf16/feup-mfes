@@ -24,14 +24,14 @@ name:=n;  gender:=g; age:=a;username:=u;
 return self;
 );
 
-public addConnection: Person ==> Person
+public addConnection: Person ==> ()
 addConnection(p) == (connections := connections union {p};
-return self;)
+)
 pre p not in set connections
 post connections = connections~ union {p};
 
-public removePerson: Person ==> ()
-removePerson(p) == connections := connections\{p}
+public removeConnection: Person ==> ()
+removeConnection(p) == connections := connections\{p}
 pre p in set connections
 post connections = connections~\{p};
 
@@ -53,11 +53,12 @@ pre skillset <> undefined and (not exists s in set skillset & (s.getDescription(
 post exists s in set skillset & (s.getDescription() = description and s.getEval() = evaluation 
 and skillset = skillset~ union {s});
 
-public editSkillEvaluation: String*nat1 ==> ()
-editSkillEvaluation(description, newEvaluation) == (
+-- Assume a person never completely loses a skill, only forgets it a bit over time, so evaluation may be edited
+public editSkillLevel: String*nat1 ==> ()
+editSkillLevel(description, newLevel) == (
 for all skills in set skillset do(
 		if(skills.getDescription() = description) then
-		skills.setEval(newEvaluation)
+		skills.setLevel(newLevel)
 	)
 );
 
@@ -66,6 +67,21 @@ getUsername() == return username;
 
 public pure getName : () ==> String 
 getName() == return name;
+
+public pure getAge : () ==> nat1 
+getAge() == return age;
+
+public pure getCV : () ==> String 
+getCV() == return CV;
+
+public pure getLocation : () ==> String 
+getLocation() == return location;
+
+public pure getSkillset : () ==> set of Skill 
+getSkillset() == return skillset;
+
+public pure getGender : () ==> Gender 
+getGender() == return gender;
 
  public pure getConnections : () ==> set of Person 
 getConnections() == return connections;

@@ -9,99 +9,124 @@ operations
                 assertTrue(cond) == return
                 pre cond;
                
-               -- Register users
-               public registerUserTest: () ==> ()
-               registerUserTest() ==
-               (
-                    dcl p:Person;
-                    dcl ppl:set of Person;
-                    assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
-                    ppl:=l.searchPersonByName("Luis");
-                    assertTrue(card ppl=1);
-                    for all p1 in set ppl do
-                    assertTrue(p.getName()=p1.getName());
-                    
-                    assertTrue((card l.getUsers()) =1);    
-               )
-               pre l.getUsers() = {} and card l.getUsers() = 0
-               post l.getUsers() <> {} and card l.getUsers() = 1;
-                
-               
-               -- Search Person By Name
-               public searchPersonByNameTest: () ==> ()
-               searchPersonByNameTest() == (
-               return
-               );
-              
-              
-              -- Add and remove connections
-              public createDestroyConnectionTest: () ==> ()
-               createDestroyConnectionTest() == (
-               return
-               );
-                
-              
-              -- Common Contacts
-              public commonContactsTest: () ==> ()
-                commonContactsTest() ==
-                (
-                    dcl p:Person;
-                    dcl p1:Person;
-                    dcl p2:Person;
-                  
-                    assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
-                    p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
-                    p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
-                    l.createConnection(p,p1);
-                    l.createConnection(p,p2);
-                    l.createConnection(p1,p2);
-                    assertTrue({p2} = l.commonContacts(p1,p));
-                    
-                );
-              
-              -- User with the most contacts
-              public mostContactsTest: () ==> ()
-                mostContactsTest() ==
-                (
-                    dcl p:Person;
-                    dcl p1:Person;
-                    dcl p2:Person;
-                  
-                    assertTrue(0=card l.getUsers()); 
-                    p:=l.registerUser("Luis",<Masculine>,22,"luis22");
-                    p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
-                    p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
-                    l.createConnection(p,p1);
-                    l.createConnection(p,p2);
-                    --p has connection with p1 and p2
-                    assertTrue(p=l.mostContacts());
-                    l.createConnection(p1,p2);
-                    l.destroyConnection(p,p2);
-                	-- p1 has connection with p & p2 while p only has with p1
-                    assertTrue(p1=l.mostContacts());
-                );
-               
-               -- Distance Between People
-               public distanceBetweenPeopleTest: () ==> ()
-                distanceBetweenPeopleTest() ==
-                (
-                return
-                );
-                
-                -- Average Distance between users in the network
-                public avgDistTest : () ==> ()
-                avgDistTest() == (
-                dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22,"pedro22");
-                dcl p1:Person:= l.registerUser("Luis",<Masculine>,22,"luis22");
-                dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22,"carlos22");
-                dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22,"filipe22");
+-- Register users
+public registerUserTest: () ==> ()
+registerUserTest() ==
+(
+	dcl p1:Person , p2:Person, p3:Person;
+  assertTrue(card l.getUsers() = 0);    
    
-								 l.createConnection(p,p1);
-								 l.createConnection(p3,p1);
-								 l.createConnection(p2,p3);
-								 l.createConnection(p2,p);
+	p1 := l.registerUser("Luis",<Masculine>,22,"luis22");
+	assertTrue(card l.getUsers() = 1);
+	assertTrue(forall s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
+	assertTrue(exists1 s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
+	
+	p2 := l.registerUser("Luis",<Masculine>,23,"luis23");
+	assertTrue(card l.getUsers() = 2);
+	assertTrue(forall s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
+	
+	p3 := l.registerUser("Carla",<Feminine>,30,"carla30");
+	assertTrue(card l.getUsers() = 3);
+	assertTrue(exists1 s in set users & s.getname() = "Carla"); -- Only ppl named luis exist yet
+	
+	-- NO NEED TO TEST IF CONSTRUCTORS SET PARAMETERS CORRECTLY - this is already done on the tests of the PersonTest class, specifically personConstructorTest
+)
+pre l.getUsers() = {} and card l.getUsers() = 0
+post l.getUsers() <> {} and card l.getUsers() = 1;
+                
+               
+-- Search Person By Name
+public searchPersonByNameTest: () ==> ()
+searchPersonByNameTest() == (
+               
+	dcl p1:Person, p2:Person;
+	dcl pplSearched:set of Person;
+               
+	assertTrue(0=card l.getUsers()); 
+	p1 := l.registerUser("Luis",<Masculine>,22,"luis22");
+	p2 := l.registerUser("Luis",<Masculine>,23,"luis23");
+               
+	-- Search for Luis -> Will find 2 people, both really named "Luis"
+	pplSearched := l.searchPersonByName("Luis");
+	assertTrue(card pplSearched=2);
+	for all p in set pplSearched do
+	   assertTrue(p.getName()="Luis");
+               
+	-- Search for Joao -> Will find no one with that name
+	pplSearched := l.searchPersonByName("Joao");
+	assertTrue(card pplSearched = 0);
+               
+	return
+);
+              
+-- TODO  
+-- Add and remove connections
+public createDestroyConnectionTest: () ==> ()
+createDestroyConnectionTest() == (
+	return
+);
+                
+              
+-- Common Contacts
+public commonContactsTest: () ==> ()
+commonContactsTest() ==
+(
+	dcl p:Person;
+	dcl p1:Person;
+	dcl p2:Person;
+                  
+	assertTrue(0=card l.getUsers()); 
+	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
+	l.createConnection(p,p1);
+	l.createConnection(p,p2);
+	l.createConnection(p1,p2);
+	assertTrue({p2} = l.commonContacts(p1,p));
+);
+              
+-- User with the most contacts
+public mostContactsTest: () ==> ()
+mostContactsTest() == (
+	dcl p:Person;
+  dcl p1:Person;
+	dcl p2:Person;
+                  
+	assertTrue(0=card l.getUsers()); 
+	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
+	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
+	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
+	l.createConnection(p,p1);
+	l.createConnection(p,p2);
+	--p has connection with p1 and p2
+	assertTrue(p=l.mostContacts());
+	l.createConnection(p1,p2);
+	l.destroyConnection(p,p2);
+	-- p1 has connection with p & p2 while p only has with p1
+	assertTrue(p1=l.mostContacts());
+);
+               
+-- TODO -> por tipo 4 pessoas ou assim, e fazer varias distancias entre elas. Por 1 pessoa disconectada e dar que a distancia é -1. Distancia a propria pessoa e 0.
+-- Distance Between People
+public distanceBetweenPeopleTest: () ==> ()
+distanceBetweenPeopleTest() == (
+	return
+);
+
+
+-- TODO put 1 more case with a disconnected graph      
+-- Average Distance between users in the network
+public avgDistTest : () ==> ()
+avgDistTest() == (
+	dcl p:Person:=  l.registerUser("Pedro",<Masculine>,22,"pedro22");
+	dcl p1:Person:= l.registerUser("Luis",<Masculine>,22,"luis22");
+	dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22,"carlos22");
+	dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22,"filipe22");
+   
+	l.createConnection(p,p1);
+	l.createConnection(p3,p1);
+	l.createConnection(p2,p3);
+	l.createConnection(p2,p);
 								 /*
 								 p - p1 = 1
 								 p - p2 = 1
@@ -113,26 +138,28 @@ operations
 								nConnections := 6;
 								avgDist := 8/6 
 								 */
-								 assertTrue(8/6 = l.avgDist());
-                );
-                public pure getLinkedIn:() ==> LinkedIn
-                getLinkedIn() ==
-                return l;
+	assertTrue(8/6 = l.avgDist());
+);
                 
-                public static main: () ==> ()
-                main() ==
-                (
-                dcl lt: LinkedInTest :=new LinkedInTest();
+public pure getLinkedIn:() ==> LinkedIn
+	getLinkedIn() ==
+	return l;
+                
+-- MAIN
+public static main: () ==> ()
+main() == (
+	dcl lt: LinkedInTest :=new LinkedInTest();
                
-               	 lt.registerUserTest();
-              	 lt.getLinkedIn().cleanUsers();
-	               lt.mostContactsTest(); 
-	               lt.getLinkedIn().cleanUsers();     
-	               lt.commonContactsTest();
-	               lt.getLinkedIn().cleanUsers();    
-	               lt.avgDistTest();
-                  return      
-                );
+	lt.registerUserTest();
+	lt.getLinkedIn().cleanUsers();
+	lt.mostContactsTest(); 
+	lt.getLinkedIn().cleanUsers();     
+	lt.commonContactsTest();
+	lt.getLinkedIn().cleanUsers();    
+	lt.avgDistTest();
+	return      
+);
+                
 functions
 -- TODO Define functiones here
 traces

@@ -46,8 +46,8 @@ pre is_String(name);  -- exists p in set users & p.getName() = name -----> is th
 -- Add Connection use case
 public createConnection: Person*Person ==> ()
 createConnection(p1, p2) == (
-dcl p: set of Person;
-atomic(p:={p1.addConnection(p2)} union {p2.addConnection(p1)})
+p1.addConnection(p2);
+p2.addConnection(p1);
 )
 pre p1 in set users and p2 in set users and  p1<>p2
 post p2 in set p1.getConnections() and p1 in set p2.getConnections();
@@ -55,8 +55,8 @@ post p2 in set p1.getConnections() and p1 in set p2.getConnections();
 -- Destroy Connection use case
 public destroyConnection: Person*Person ==> ()
 destroyConnection(p1, p2) == (
-p1.removePerson(p2);
-p2.removePerson(p1);
+p1.removeConnection(p2);
+p2.removeConnection(p1);
 ) 
 pre p1 in set users and p2 in set users and p1<>p2 and p2 in set p1.getConnections() and p1 in set p2.getConnections()
 post  p2 not in set p1.getConnections() and p1 not in set p2.getConnections();

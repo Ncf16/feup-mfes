@@ -1,33 +1,114 @@
 class PersonTest
 types
--- TODO Define types here
+public String = seq of char;
+public Gender = <Masculine> | <Feminine>;
 values
 -- TODO Define values here
 instance variables
--- TODO Define instance variables here
+ public person:Person := new Person("Teste",<Masculine>,22,"Teste22");
 operations
 
+-- Assert Generic Operation
+ assertTrue: bool ==> ()
+                assertTrue(cond) == return
+                pre cond;
+
+ -- Test Person constructor (Name, gender, age, username and default values not input)
+ public personConstructorTest: () ==> ()
+ personConstructorTest() == (
+ 	dcl testPerson:Person := new Person("Teste",<Masculine>,22,"Teste22");
+ 	
+ 	assertTrue(testPerson.getName() = "Teste");
+ 	assertTrue(testPerson.getGender() = <Masculine>);
+ 	assertTrue(testPerson.getAge() = 22);
+ 	assertTrue(testPerson.getUsername() = "Teste");
+ 	assertTrue(testPerson.getCV() = "");
+ 	assertTrue(testPerson.getLocation() = "");
+ 	assertTrue(card testPerson.getSkillset() = 0);
+  assertTrue(card testPerson.getConnections() = 0);
+ 	
+ return
+ );
+ 
  -- Add and remove connections only on this user's side (doesn't affect the symmetrical connection on the user he is adding or removing)
 public addRemoveConnectionTest: () ==> ()
   addRemoveConnectionTest() == (
+  -- Test that person starts out with 0 connections
+  dcl p1:Person := new Person("Pedro",<Masculine>,22,"Pedro22");
+  dcl p2:Person := new Person("Joana", <Feminine>, 45, "Joana45");
+  dcl p3:Person := new Person("Ana", <Feminine>, 19, "Ana19");
+  assertTrue(card p1.getConnections() = 0);
+  assertTrue(card p1.getConnections() = 0);
+  
+  -- Pedro adds Joana to his connection set
+  p1.addConnection(p2);
+  assertTrue(card p1.getConnections() = 1);
+  assertTrue(forall p in set p1.getConnections() & p.getName() = "Joana");
+  
+  -- Pedro adds Ana to his connection set
+  p1.addConnection(p2);
+  assertTrue(card p1.getConnections() = 2);
+  assertTrue(exists1 p in set p1.getConnections() & p.getName() = "Ana");
+  
+  -- Pedro removes Joana from his connection set
+  p1.removeConnection(p1);
+  assertTrue(card p1.getConnections() = 1);
+  assertTrue(forall p in set p1.getConnections() & p.getName() = "Ana");
+  
+  -- Pedro removes Ana from his connection set
+  p1.removeConnection(p2);
+  assertTrue(card p1.getConnections() = 0);
+  
   return
 );
                
  -- Edit User Location
 public editLocationTest: () ==> ()
 	editLocationTest() == (
+	person.editLocation("Location String");
+	assertTrue(person.getLocation() = "Location String");
+	assertTrue(len person.getLocation() = 15);
+	person.editLocation("");
+	assertTrue(person.getLocation() = "");
+	assertTrue(len person.getLocation() = 0);
 	return
 );
 
  -- Edit User Curriculum
 public editCVTest: () ==> ()
 	editCVTest() == (
+	person.editCV("TestCV String");
+	assertTrue(person.getCV() = "TestCV String");
+	assertTrue(len person.getCV() = 13);
+	person.editCV("");
+	assertTrue(person.getCV() = "");
+	assertTrue(len person.getCV() = 0);
 	return
-);
+)
+pre is_String(person.getCV());
 
  -- Add skills and edit their evaluations
  public addEditSkillsTest: () ==> ()
 	addEditSkillsTest() == (
+	
+	dcl p1:Person := new Person("Pedro",<Masculine>,22,"Pedro22");
+	assertTrue(card p1.getSkillset() = 0);
+	
+	-- Add a first skill
+	p1.addSkill("C++", 4);
+	assertTrue(card p1.getSkillset() = 1);
+	assertTrue(exists1 p in set p1.getSkillset() & p.getDescription() = "C++" and p.getLevel() = 4);
+	
+	-- Add a second skill
+	p1.addSkill("Java", 5);
+	assertTrue(card p1.getSkillset() = 2);
+	assertTrue(exists1 p in set p1.getSkillset() & p.getDescription() = "Java" and p.getLevel() = 5);
+	
+	-- Edits a skill evaluation, forgot a bit of C++
+	p1.editSkillLevel("C++", 3);
+	assertTrue(card p1.getSkillset() = 2);
+	assertTrue(exists1 p in set p1.getSkillset() & p.getDescription() = "C++" and p.getLevel() = 3);
+	
 	return
 );
 
