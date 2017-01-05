@@ -21,7 +21,7 @@ operations
  	assertTrue(testPerson.getName() = "Teste");
  	assertTrue(testPerson.getGender() = <Masculine>);
  	assertTrue(testPerson.getAge() = 22);
- 	assertTrue(testPerson.getUsername() = "Teste");
+ 	assertTrue(testPerson.getUsername() = "Teste22");
  	assertTrue(testPerson.getCV() = "");
  	assertTrue(testPerson.getLocation() = "");
  	assertTrue(card testPerson.getSkillset() = 0);
@@ -116,15 +116,11 @@ public static main: () ==> ()
 	main() ==
 (
 dcl personTest: PersonTest :=new PersonTest();
+	personTest.personConstructorTest();
   personTest.addRemoveConnectionTest();
   personTest.editLocationTest();
   personTest.editCVTest();
   personTest.addEditSkillsTest();
 	return      
 );
-
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end PersonTest

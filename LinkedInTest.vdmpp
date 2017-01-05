@@ -224,8 +224,9 @@ public pure getLinkedIn:() ==> LinkedIn
 public static main: () ==> ()
 main() == (
 	dcl lt: LinkedInTest :=new LinkedInTest();
-               
 	lt.registerUserTest();
+	lt.getLinkedIn().cleanUsers();
+	lt.searchPersonByNameTest();
 	lt.getLinkedIn().cleanUsers();
 	lt.mostContactsTest(); 
 	lt.getLinkedIn().cleanUsers();     
@@ -236,6 +237,7 @@ main() == (
 	lt.createDestroyConnectionTest();
 	lt.getLinkedIn().cleanUsers();
 	lt.distanceBetweenPeopleTest();
+	PersonTest`main();
 	
 	return      
 );
