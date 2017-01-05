@@ -105,15 +105,22 @@ commonContactsTest() ==
 	dcl p:Person;
 	dcl p1:Person;
 	dcl p2:Person;
+	dcl p3:Person;
                   
 	assertTrue(0=card l.getUsers()); 
 	p:=l.registerUser("Luis",<Masculine>,22,"luis22");
 	p1:=l.registerUser("Filipe",<Masculine>,22,"filipe22");
 	p2:=l.registerUser("Pedro",<Masculine>,22,"pedro22");
-	l.createConnection(p,p1);
-	l.createConnection(p,p2);
+	p3:=l.registerUser("Joana",<Feminine>,22,"joana22");
+	
 	l.createConnection(p1,p2);
+	l.createConnection(p,p2);
+	l.createConnection(p2,p3);
+	
+	-- p1 and p1 have p2 as common
 	assertTrue(l.commonContacts(p1,p) = {p2});
+	-- p2 and p3 have no common
+	assertTrue(l.commonContacts(p2,p3) = {});
 );
               
 -- User with the most contacts
@@ -195,10 +202,14 @@ avgDistTest() == (
 	dcl p2:Person:= l.registerUser("Carlos",<Masculine>,22,"carlos22");
 	dcl p3:Person:= l.registerUser("Filipe",<Masculine>,22,"filipe22");
   dcl p4:Person; 
+  
+  assertTrue(0 = l.avgDist());
+  
 	l.createConnection(p,p1);
 	l.createConnection(p3,p1);
 	l.createConnection(p2,p3);
 	l.createConnection(p2,p);
+	
 								 /*
 								 p - p1 = 1
 								 p - p2 = 1

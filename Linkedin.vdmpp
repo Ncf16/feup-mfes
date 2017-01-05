@@ -64,15 +64,20 @@ post  p2 not in set p1.getConnections() and p1 not in set p2.getConnections();
 -- Common Contacts use case
 public commonContacts : Person*Person ==> set of Person
 commonContacts(p,p1) == (
-dcl commonContacts: set of Person := {};
-for all c in set p.getConnections() do if (c in set p1.getConnections())
- then 	commonContacts := commonContacts union {c};
-return commonContacts;)
+-- dcl commonContacts: set of Person :-= {};
+--for all c in set p.getConnections() do if (c in set p1.getConnections())s
+-- then 	commonContacts := commonContacts union {c};
+--return commonContacts;
+return {user | user in set p1.getConnections() & user in set p.getConnections() }
+)
 pre p <> p1 and  exists p2,p3 in set users & (  p2=p  and p3 =p1)
-post exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
-(
-forall c in set RESULT & (c in set p2.getConnections() and c in set p3.getConnections() 
-)));
+post not exists u in set p1.getConnections() & (u in set p.getConnections() and u not in set RESULT);
+
+--exists p2,p3 in set users & (  p2 = p  and p3 = p1  and 
+--(
+--	forall c in set RESULT & (c in set p2.getConnections() and c in set p3.getConnections() 
+-- )));
+
  
  
 
@@ -82,13 +87,6 @@ mostContacts() ==
 	return {s|s in set users & (not exists p1 in set users & p1.connectionsSize() > s.connectionsSize())}
 pre users <> {}
 post forall u in set RESULT & (not exists p in set users & (p.connectionsSize() > u.connectionsSize()));
-
-public editCV: Person*String ==> ()
- editCV(p,cv) == (
-  p.editCV(cv);
- )
- pre exists p1 in set  users & (p1 = p );
-
 
 -- Distance Between Two Users use case
 public distanceBetweenPeople:Person*Person ==> int 
