@@ -24,7 +24,7 @@ setDescription(desc) ==   description:= desc;
 getLevel() == return level;
  
  public setLevel : nat1 ==> ()
-setlevel(lev) ==   level:=lev;
+setLevel(lev) ==   level:=lev;
 
 functions
 -- TODO Define functiones here

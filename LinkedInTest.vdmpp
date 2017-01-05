@@ -18,16 +18,16 @@ registerUserTest() ==
    
 	p1 := l.registerUser("Luis",<Masculine>,22,"luis22");
 	assertTrue(card l.getUsers() = 1);
-	assertTrue(forall s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
-	assertTrue(exists1 s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
+	assertTrue(forall s in set l.getUsers() & s.getName() = "Luis"); -- Only ppl named luis exist yet
+	assertTrue(exists1 s in set l.getUsers() & s.getName() = "Luis"); -- Only ppl named luis exist yet
 	
 	p2 := l.registerUser("Luis",<Masculine>,23,"luis23");
 	assertTrue(card l.getUsers() = 2);
-	assertTrue(forall s in set users & s.getname() = "Luis"); -- Only ppl named luis exist yet
+	assertTrue(forall s in set l.getUsers() & s.getName() = "Luis"); -- Only ppl named luis exist yet
 	
 	p3 := l.registerUser("Carla",<Feminine>,30,"carla30");
 	assertTrue(card l.getUsers() = 3);
-	assertTrue(exists1 s in set users & s.getname() = "Carla"); -- Only ppl named luis exist yet
+	assertTrue(exists1 s in set l.getUsers() & s.getName() = "Carla"); -- Only ppl named luis exist yet
 	
 	-- NO NEED TO TEST IF CONSTRUCTORS SET PARAMETERS CORRECTLY - this is already done on the tests of the PersonTest class, specifically personConstructorTest
 )

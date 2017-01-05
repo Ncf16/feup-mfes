@@ -50,7 +50,7 @@ dcl skill:Skill := new Skill(description, evaluation);
 skillset:= skillset union {skill}
 )
 pre skillset <> undefined and (not exists s in set skillset & (s.getDescription() = description))
-post exists s in set skillset & (s.getDescription() = description and s.getEval() = evaluation 
+post exists s in set skillset & (s.getDescription() = description and s.getLevel() = evaluation 
 and skillset = skillset~ union {s});
 
 -- Assume a person never completely loses a skill, only forgets it a bit over time, so evaluation may be edited
