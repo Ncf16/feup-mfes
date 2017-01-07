@@ -53,7 +53,7 @@ pre skillset <> undefined and (not exists s in set skillset & (s.getDescription(
 post exists s in set skillset & (s.getDescription() = description and s.getLevel() = evaluation 
 and skillset = skillset~ union {s});
 
--- Assume a person never completely loses a skill, only forgets it a bit over time, so evaluation may be edited
+-- Assume a person never completely loses a skill, only forgets it a bit over time or improves it, so evaluation may be edited
 public editSkillLevel: String*nat1 ==> ()
 editSkillLevel(description, newLevel) == (
 for all skills in set skillset do(
