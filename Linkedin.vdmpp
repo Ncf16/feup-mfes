@@ -8,8 +8,8 @@ private users : set of Person := {};
 private avgDistance : real := 1;
 private usersMostContacts : set of Person := {};
 inv card users >= 0;
+inv avgDistance >= 0;
 
- inv avgDistance >= 0;
 operations
 
 public LinkedIn: () ==> LinkedIn
@@ -138,7 +138,7 @@ avgDist() == (
 	return avgDistance;
 )
 pre users <> {} and users <> undefined
-post avgDistance >= 0;-- should I leave this here? 
+post avgDistance >= 0;
 -- Auxiliar functions 
 public pure getUsers : () ==> set of Person
 getUsers() == return users;
