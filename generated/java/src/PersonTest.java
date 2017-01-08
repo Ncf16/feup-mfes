@@ -166,7 +166,7 @@ public class PersonTest {
     return;
   }
 
-  public static void main() {
+  public static void main(String[] args) {
 
     PersonTest personTest = new PersonTest();
     personTest.personConstructorTest();
